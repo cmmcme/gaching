@@ -1,10 +1,11 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import MongoDBManager from '../src/util/MongoDBManager';
 
+const connect = MongoDBManager.getInstance();
 const app = express();
 
 let port = 8080;
-
 
 // SETUP MIDDLEWARE
 app.use(bodyParser.json());
