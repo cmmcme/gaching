@@ -6,30 +6,46 @@ const router = express.Router();
 // Create
 router.post('/', (req, res) => {
   const post = req.body;
-  console.log(post);
 
-  const result = PostDao.createPost(post);
+  PostDao.createPost(post)
+    .then(result => {
+      res.json(result);
+    })
+    .catch(err => {
+      console.error(err);
+      res.statusCode = 500;
+      res.end();
+    });
+});
 
-  return res.json({
-    success: true
-  });
+router.get('/list',(req,res) => {
+  PostDao.getPosts()
+    .then(docs => {
+      console.log(docs);
+      res.json(docs)
+    })
+    .catch(err => {
+      console.error(err);
+      res.statusCode = 500;
+      res.end();
+    });
 });
 
 // READ
 router.get('/:postId', (req, res) => {
-  console.log('reading post ', req.params.postId);
-  return res.json({
-    index: req.params.postId
-  });
+  const postId = req.params.postId;
+
+  PostDao.getPost(postId)
+    .then(doc => {
+      console.log(doc);
+      res.json(doc)
+    })
+    .catch(err => {
+      console.error(err);
+      res.statusCode = 500;
+      res.end();
+    });
 });
 
-router.get('/list',(req,res) => {
-  console.log('reading post list ');
 
-  const docs = PostDao.getPosts({});
-
-  return res.json({
-    docs,
-  });
-});
 export default router;

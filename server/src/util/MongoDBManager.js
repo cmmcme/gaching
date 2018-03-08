@@ -4,7 +4,7 @@ const address = 'localhost';
 const port = '27017';
 const dbname = 'gaching';
 
-const mongoUrl = `mongodb://${address}:${port}`;
+const mongoUrl = `mongodb://${address}:${port}/${dbname}`;
 
 let instance = null;
 class MongoDBManager {
@@ -23,7 +23,7 @@ class MongoDBManager {
           throw Error('CONNECTION REFUSED: ' + mongoUrl);
         } else {
           console.log(`connect to '${mongoUrl}'`);
-          this._db = db.connect(dbname);
+          this._db = db;
         }
       });
       instance = this;
@@ -31,35 +31,60 @@ class MongoDBManager {
     return instance;
   }
 
-  insertone(col, doc) {
-    console.log(this._db);
-   const collection = this._db.collection(col);
-   collection.insert(doc, function (err, records) {
-      if(err) {
-        throw Error('INSERT REFUSED: ' + err);
-      }
-      console.log(col, " insertOne ");
-      return records;
+  insertone(col) {
+    const args = Array.prototype.slice.call(arguments, 1);
+    return new Promise((resolve, reject) => {
+      this._db.collection(col, (err, coll) => {
+        if(err) {
+          reject(err);
+        } else {
+          coll.insertOne(...args, (err, result) => {
+            if(err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          });
+        }
+      });
     });
   }
-  findone(col,key) {
-  //  var collection = this._db.collection(col);
-    this._db.collection.findOne(key , function(err, item) {
-      if(err) {
-        throw Error('FIND REFUSED: ' + err);
-      }
-      console.log(col, "FindOne := ", key);
-      return item;
+
+  findone(col) {
+    const args = Array.prototype.slice.call(arguments, 1);
+    return new Promise((resolve, reject) => {
+      this._db.collection(col, (err, coll) => {
+        if(err) {
+          reject(err);
+        } else {
+          coll.findOne(...args, (err, doc) => {
+            if(err) {
+              reject(err);
+            } else {
+              resolve(doc);
+            }
+          });
+        }
+      });
     });
   }
-  findmany(col,key) {
- //   var collection = this._db.collection(col);
-    this._db.collection.find().toArray(function(err, items) {
-      if(err) {
-        throw Error('FIND REFUSED: ' + err);
-      }
-      console.log(col, "FindMany := ", key);
-      return items;
+
+  findmany(col) {
+    const args = Array.prototype.slice.call(arguments, 1);
+    return new Promise((resolve, reject) => {
+      this._db.collection(col, (err, coll) => {
+        if(err) {
+          reject(err);
+        } else {
+          coll.find(...args).toArray((err, docs) => {
+            if(err) {
+              reject(err);
+            } else {
+              resolve(docs);
+            }
+          });
+        }
+      });
     });
   }
 }

@@ -1,18 +1,19 @@
 import MongoDBManager from '../util/MongoDBManager';
+import { ObjectID } from 'mongodb';
 const mongodbManager = MongoDBManager.getInstance();
 const POST_COLLECTION = 'post';
 class PostDAO {
 
-  static getPost(key) {
-    return mongodbManager.findone(this._postCollection,key);
+  static getPost(postId) {
+    return mongodbManager.findone(POST_COLLECTION, { _id: ObjectID(postId) });
   }
 
-  static getPosts(key) {
-    return mongodbManager.findmany(this._postCollection,key);
+  static getPosts() {
+    return mongodbManager.findmany(POST_COLLECTION);
   }
 
   static createPost(post) {
-    return mongodbManager.insertone(this._postCollection, post);
+    return mongodbManager.insertone(POST_COLLECTION, post);
   }
 }
 
