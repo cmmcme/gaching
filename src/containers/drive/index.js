@@ -1,5 +1,11 @@
 import React from 'react';
-import Post from './components/post';
+// import { css, withStyles, withStylesPropTypes } from 'react-with-styles';
+import PostRequest from '../../requests/post.request';
+import DrivePost from './components/drivePost';
+
+// const propTypes = {
+//   ...withStylesPropTypes,
+// };
 
 class Drive extends React.Component {
   constructor(props) {
@@ -15,13 +21,12 @@ class Drive extends React.Component {
   }
 
   fetchPostList() {
-    this.setState({
-      posts: [
-        {
-          title: 'first document',
-        },
-      ],
-    });
+    PostRequest.getPosts()
+      .then(posts => {
+        this.setState({
+          posts,
+        });
+      });
   }
 
   render() {
@@ -30,7 +35,7 @@ class Drive extends React.Component {
     return (
       <div>
         {posts.map((post, index) => (
-          <Post key={index} post={post}/>
+          <DrivePost key={index} post={post}/>
         ))}
       </div>
     );
@@ -38,3 +43,8 @@ class Drive extends React.Component {
 }
 
 export default Drive;
+
+// export { Drive as PureDrive };
+//
+// export default withStyles(({ reactDates: { color, font } }) => ({
+// }))(Drive);
