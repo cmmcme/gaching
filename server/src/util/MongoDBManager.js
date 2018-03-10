@@ -87,6 +87,25 @@ class MongoDBManager {
       });
     });
   }
+
+  deleteone(col) {
+    const args = Array.prototype.slice.call(arguments, 1);
+    return new Promise((resolve, reject) => {
+      this._db.collection(col, (err, coll) => {
+        if(err) {
+          reject(err);
+        } else {
+          coll.deleteOne(...args, (err, result) => {
+            if(err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          });
+        }
+      });
+    });
+  }
 }
 
 export default MongoDBManager;

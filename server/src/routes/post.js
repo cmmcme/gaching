@@ -1,5 +1,5 @@
 import express from 'express';
-import PostDao from '../data/Post.DAO';
+import PostDao from '../dao/Post.DAO';
 
 const router = express.Router();
 
@@ -47,5 +47,16 @@ router.get('/:postId', (req, res) => {
     });
 });
 
+router.delete('/:postId', (req, res) => {
+  const postId = req.params.postId;
+
+  PostDao.deletePost(postId)
+    .then(result => res.json(result))
+    .catch(err => {
+      console.error(err);
+      res.statusCode = 500;
+      res.end();
+    });
+});
 
 export default router;

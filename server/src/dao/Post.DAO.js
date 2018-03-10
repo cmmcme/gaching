@@ -15,6 +15,10 @@ class PostDAO {
   static createPost(post) {
     return mongodbManager.insertone(POST_COLLECTION, post);
   }
+
+  static deletePost(postId) {
+    return mongodbManager.deleteone(POST_COLLECTION, { _id: ObjectID(postId) });
+  }
 }
 
 export default PostDAO;

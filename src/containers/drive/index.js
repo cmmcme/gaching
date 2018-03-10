@@ -1,11 +1,7 @@
 import React from 'react';
-// import { css, withStyles, withStylesPropTypes } from 'react-with-styles';
 import PostRequest from '../../requests/post.request';
-import DrivePost from './components/drivePost';
-
-// const propTypes = {
-//   ...withStylesPropTypes,
-// };
+import DrivePostList from './components/DrivePostList';
+import ButtonNewPost from './components/ButtonNewPost';
 
 class Drive extends React.Component {
   constructor(props) {
@@ -14,6 +10,9 @@ class Drive extends React.Component {
     this.state = {
       posts: [],
     };
+
+    this.fetchPostList = this.fetchPostList.bind(this);
+    this.createNewPost = this.createNewPost.bind(this);
   }
 
   componentWillMount() {
@@ -29,14 +28,26 @@ class Drive extends React.Component {
       });
   }
 
+  createNewPost(post) {
+    PostRequest.addPost(post)
+      .then(this.fetchPostList)
+      .catch(err => console.error(err));
+  }
+
+  // deletePost(postId) {
+  //   PostRequest.deletePost(postId)
+  //     .then(this.fetchPostList)
+  //     .catch(err => console.error(err));
+  // }
+
   render() {
     const { posts } = this.state;
 
     return (
       <div>
-        {posts.map((post, index) => (
-          <DrivePost key={index} post={post}/>
-        ))}
+        <ButtonNewPost onClick={this.createNewPost}/>
+
+        <DrivePostList posts={posts}/>
       </div>
     );
   }
